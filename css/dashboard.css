@@ -1,0 +1,381 @@
+/* ============================================================
+   dashboard.css — Stile dashboard e cards servizi
+   ============================================================ */
+
+.page-dashboard {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Layout principale ───────────────────────────────────── */
+.dash-main {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  padding: 2rem 1.5rem 3rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ── Hero / Titolo ───────────────────────────────────────── */
+.dash-hero {
+  margin-bottom: 2rem;
+  animation: fadeSlideDown 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.dash-title {
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: var(--text-primary);
+}
+
+.dash-sub {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-top: 0.35rem;
+}
+
+@keyframes fadeSlideDown {
+  from { opacity: 0; transform: translateY(-12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Griglia servizi ─────────────────────────────────────── */
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.25rem;
+}
+
+/* ── Card servizio ───────────────────────────────────────── */
+.service-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.5rem;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform var(--transition-normal),
+              box-shadow var(--transition-normal),
+              background var(--transition-normal),
+              border-color var(--transition-normal);
+
+  /* Animazione ingresso con stagger via JS */
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+.service-card.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow var(--transition-normal), background var(--transition-normal),
+              border-color var(--transition-normal);
+}
+
+/* Linea accent superiore */
+.service-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg,
+    var(--card-accent, var(--accent-blue)) 0%,
+    transparent 100%
+  );
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+}
+
+.service-card:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: var(--shadow-hover);
+  background: var(--bg-glass-hover);
+  border-color: var(--border-hover);
+}
+
+.service-card:hover::before { opacity: 1; }
+
+/* Glow sul bordo */
+.service-card::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg,
+    var(--card-accent, var(--accent-blue)) 0%,
+    transparent 60%
+  );
+  opacity: 0;
+  transition: opacity var(--transition-slow);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.service-card:hover::after { opacity: 0.12; }
+
+/* ── Avatar ──────────────────────────────────────────────── */
+.card-avatar {
+  position: relative;
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-md);
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.service-card:hover .card-avatar {
+  background: rgba(var(--card-accent, 59 130 246) / 0.15);
+  box-shadow: 0 0 20px rgba(var(--card-accent, 59 130 246) / 0.25);
+}
+
+.card-avatar--has-img .avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+  position: absolute;
+  inset: 0;
+}
+
+.card-avatar--has-img .avatar-letters {
+  display: none;
+}
+
+.card-avatar.no-img .avatar-letters {
+  display: block;
+}
+
+.card-avatar--has-img .avatar-image:not([style*="display: none"]) + .avatar-letters,
+.card-avatar--has-img .avatar-image + .avatar-letters {
+  display: none;
+}
+
+/* fallback quando l'immagine viene rimossa dall'onerror */
+.card-avatar--has-img .avatar-image:empty + .avatar-letters,
+.card-avatar--has-img .avatar-image[loading="lazy"] + .avatar-letters {
+  display: none;
+}
+
+.avatar-letters {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--card-accent, var(--accent-blue));
+  line-height: 1;
+}
+
+.avatar-ring {
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  border: 1.5px solid var(--card-accent, var(--accent-blue));
+  opacity: 0;
+  transition: opacity var(--transition-normal), transform var(--transition-slow);
+  transform: scale(0.85);
+}
+
+.service-card:hover .avatar-ring {
+  opacity: 0.5;
+  transform: scale(1);
+}
+
+/* ── Info card ───────────────────────────────────────────── */
+.card-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.card-title {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-url {
+  display: block;
+  font-size: 0.775rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 0.2rem;
+  transition: color var(--transition-fast);
+}
+
+.service-card:hover .card-url { color: var(--text-secondary); }
+
+/* ── Credenziali (visibili solo all'hover) ───────────────── */
+.card-creds {
+  border-top: 1px solid var(--border-glass);
+  padding-top: 0.875rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity var(--transition-normal), transform var(--transition-normal);
+  pointer-events: none;
+}
+
+.service-card:hover .card-creds {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.cred-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 28px;
+}
+
+.cred-icon {
+  width: 14px;
+  height: 14px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.cred-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  width: 32px;
+  flex-shrink: 0;
+}
+
+.cred-value {
+  flex: 1;
+  font-size: 0.8125rem;
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cred-pass { letter-spacing: 0.08em; }
+
+.no-creds {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* ── Pulsante copia ──────────────────────────────────────── */
+.copy-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  flex-shrink: 0;
+  transition: all var(--transition-fast);
+  /* Intercetta click senza aprire link */
+  position: relative;
+  z-index: 2;
+}
+
+.copy-btn svg { width: 14px; height: 14px; }
+
+.copy-btn:hover {
+  color: var(--accent-teal);
+  background: rgba(20, 184, 166, 0.12);
+}
+
+.copy-btn.copied {
+  color: var(--accent-green);
+  background: rgba(34, 197, 94, 0.12);
+}
+
+/* ── Freccia apertura ────────────────────────────────────── */
+.card-arrow {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  opacity: 0;
+  transform: translate(-4px, 4px);
+  transition: all var(--transition-normal);
+}
+
+.card-arrow svg { width: 16px; height: 16px; }
+
+.service-card:hover .card-arrow {
+  opacity: 1;
+  transform: translate(0, 0);
+  color: var(--card-accent, var(--accent-blue));
+}
+
+/* ── Empty state ─────────────────────────────────────────── */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 3rem 2rem;
+  border-radius: var(--radius-lg);
+  text-align: center;
+  color: var(--text-secondary);
+  max-width: 420px;
+  margin: 2rem auto;
+}
+
+.empty-state svg {
+  width: 48px;
+  height: 48px;
+  opacity: 0.4;
+}
+
+.btn-add-first {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  background: rgba(59, 130, 246, 0.15);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: var(--radius-md);
+  color: var(--accent-blue);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all var(--transition-fast);
+}
+
+.btn-add-first:hover {
+  background: rgba(59, 130, 246, 0.25);
+  transform: translateY(-1px);
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .dash-main { padding: 1.25rem 1rem 2.5rem; }
+  .services-grid { grid-template-columns: 1fr; }
+}
